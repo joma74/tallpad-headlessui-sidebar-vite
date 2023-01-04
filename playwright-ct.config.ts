@@ -1,64 +1,60 @@
-import { devices, type PlaywrightTestConfig } from '@playwright/experimental-ct-vue'
+import {
+  devices,
+  type PlaywrightTestConfig,
+} from "@playwright/experimental-ct-vue"
 
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
+import vue from "@vitejs/plugin-vue"
+import { resolve } from "path"
+import AutoImport from "unplugin-auto-import/vite"
+import Components from "unplugin-vue-components/vite"
 
 const config: PlaywrightTestConfig = {
-  testDir: './tests/component',
+  testDir: "./tests/component",
   use: {
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
     ctViteConfig: {
       plugins: [
         vue(),
         AutoImport({
           imports: [
-            'vue',
-            'vue-router',
-            '@vueuse/head',
-            'pinia',
+            "vue",
+            "vue-router",
+            "@vueuse/head",
+            "pinia",
             {
-              '@/store': ['useStore'],
+              "@/store": ["useStore"],
             },
           ],
-          dts: 'src/auto-imports.d.ts',
+          dts: "src/auto-imports.d.ts",
           eslintrc: {
             enabled: true,
           },
         }),
         Components({
-          dirs: ['src/components'],
-          extensions: ['vue'],
+          dirs: ["src/components"],
+          extensions: ["vue"],
         }),
       ],
       resolve: {
         alias: {
-          '@': resolve(__dirname, './src'),
+          "@": resolve(__dirname, "./src"),
         },
       },
     },
   },
   projects: [
     {
-      name: 'iPhone 6',
+      name: "Desktop Firefox",
       use: {
-        browserName: 'webkit',
-        ...devices['iPhone 6'],
+        browserName: "firefox",
+        ...devices["Desktop Firefox"],
       },
     },
     {
-      name: 'Macbook 11',
+      name: "Desktop Chrome",
       use: {
-        browserName: 'firefox',
-        ...devices['Macbook 11'],
-      },
-    },
-    {
-      name: 'Desktop',
-      use: {
-        browserName: 'chromium',
-        ...devices['Macbook Pro'],
+        browserName: "chromium",
+        ...devices["Desktop Chrome"],
       },
     },
   ],

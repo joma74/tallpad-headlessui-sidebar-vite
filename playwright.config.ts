@@ -1,37 +1,30 @@
-import { devices, type PlaywrightTestConfig } from '@playwright/test'
+import { devices, type PlaywrightTestConfig } from "@playwright/test"
 
 const config: PlaywrightTestConfig = {
-  testDir: './tests/e2e',
+  testDir: "./tests/e2e",
   webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000/',
+    command: "yarn dev",
+    url: "http://localhost:5173/",
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
+    baseURL: "http://localhost:5173",
+    trace: "on-first-retry",
   },
   projects: [
     {
-      name: 'iPhone 6',
+      name: "Desktop Firefox",
       use: {
-        browserName: 'webkit',
-        ...devices['iPhone 6'],
+        browserName: "firefox",
+        ...devices["Desktop Firefox"],
       },
     },
     {
-      name: 'Macbook 11',
+      name: "Desktop Chrome",
       use: {
-        browserName: 'firefox',
-        ...devices['Macbook 11'],
-      },
-    },
-    {
-      name: 'Desktop',
-      use: {
-        browserName: 'chromium',
-        ...devices['Macbook Pro'],
+        browserName: "chromium",
+        ...devices["Desktop Chrome"],
       },
     },
   ],
