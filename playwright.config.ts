@@ -2,6 +2,10 @@ import { devices, type PlaywrightTestConfig } from "@playwright/test"
 
 const config: PlaywrightTestConfig = {
   testDir: "./tests/e2e",
+  reporter: [
+    ["line"],
+    ["html", { open: "never", outputFolder: "test-report" }],
+  ],
   webServer: {
     command: "yarn dev",
     url: "http://localhost:5173/",
