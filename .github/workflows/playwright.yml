@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 16
       - name: Install dependencies
-        run: yarn ci
+        run: yarn install --frozen-lockfile
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
@@ -22,6 +22,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: test-report
+          path: test-report/
           retention-days: 30
