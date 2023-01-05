@@ -16,12 +16,6 @@ jobs:
           cache: "yarn"
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "version=$(yarn why --json @playwright/test | grep -h 'Found' | jq '(.data)' | sed 's/\".*@playwright\/test@\(.*\)\\\"\"/\1/')"  >> $GITHUB_OUTPUT
-      - name: Use the value
-        id: step_two
-        run: echo "${{ steps.playwright-version.outputs.version }}" # This will output '1.29.1'
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests

@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "yarn.lock"
+      - ".github/workflows/main.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "yarn.lock"
+      - ".github/workflows/main.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        # Figures out the version of playwright that's installed.
+        # 1. Because we don't know what version yarn will resolve it to, we have
+        #    to use `yarn why` to get the actually installed version.
+        # 2. Because we're in a workspace, we need to make sure we get the version
+        #    for the root and not any children, hence the `grep`. If not using
+        #    workspaces, this can be skipped.
+        # 3. jq comes pre-installed in the Ubuntu runner, so we use that to get
+        #    the correct version string.
+        # 4. Finally, we use sed to extract just the version number (eg; '1.22.0')
+        # The result is stored in steps.playwright-version.outputs.version
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "version=$(yarn why --json @playwright/test | grep -h 'Found' | jq '(.data)' | sed 's/\".*@playwright\/test@\(.*\)\\\"\"/\1/')"  >> $GITHUB_OUTPUT
+        # Attempt to restore the correct Playwright browser binaries based on the
+        # currently installed version of Playwright (The browser binary versions
+        # may change with Playwright versions).
+        # Note: Playwright's cache directory is hard coded because that's what it
+        # says to do in the docs. There doesn't appear to be a command that prints
+        # it out for us.
+      - uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: "~/.cache/ms-playwright"
+          key: "${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}"
+          # As a fallback, if the Playwright version has changed, try use the
+          # most recently cached version. There's a good chance that at least one
+          # of the browser binary versions haven't been updated, so Playwright can
+          # skip installing that in the next step.
+          # Note: When falling back to an old cache, `cache-hit` (used below)
+          # will be `false`. This allows us to restore the potentially out of
+          # date cache, but still let Playwright decide if it needs to download
+          # new binaries or not.
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      # If the Playwright browser binaries weren't able to be restored, we tell
+      # paywright to install everything for us.
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps
+      - name: Run unit tests
+        run: yarn test_ci
+      - name: Run component tests
+        run: yarn test_ci-ct
+      - name: Run e2e tests
+        run: yarn test_ci-e2e
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-report
+          path: test-report/
+          retention-days: 30
