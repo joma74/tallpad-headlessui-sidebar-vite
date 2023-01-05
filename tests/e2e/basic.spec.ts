@@ -65,16 +65,4 @@ test("looks like expected screenshot", async ({
       scale: "device",
     },
   )
-
-  // ALT 2: snapshot-store-compare in one step; adds screenshot to test report only if failure
-  // DISABlE b/c does not succeeds a second time
-  //   if (!_h) {
-  //     await new Promise((resolve) => setTimeout(resolve, 1000))
-  //   }
-
-  // await expect(page).toHaveScreenshot(screenshotFilename, {
-  //   fullPage: true,
-  //   scale: "device",
-  //   // maxDiffPixelRatio: 0.01,
-  // })
 })
