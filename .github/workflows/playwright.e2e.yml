@@ -1,9 +1,19 @@
 name: Playwright E2E Tests
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "yarn.lock"
+      - ".github/workflows/playwright.e2e.yml"
   pull_request:
-    branches: [main, master]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "yarn.lock"
+      - ".github/workflows/playwright.e2e.yml"
 jobs:
   test:
     timeout-minutes: 60
