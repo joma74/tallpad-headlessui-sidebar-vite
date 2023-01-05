@@ -18,7 +18,7 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Get installed Playwright version
         id: playwright-version
-        run: echo "::set-output name=version::$(yarn why --json @playwright/test | grep -h 'workspace:.' | jq --raw-output '.children[].locator' | sed -e 's/@playwright\/test@.*://')"
+        run: echo "version=$(yarn why --json @playwright/test | grep -h 'Found' | jq '(.data)' | sed 's/\".*@playwright\/test@\(.*\)\\\"\"/\1/')"  >> $GITHUB_OUTPUT
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
