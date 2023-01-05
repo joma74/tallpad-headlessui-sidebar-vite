@@ -37,7 +37,7 @@ test("looks like expected screenshot", async ({
 
   const screenshotFilename = `${prefix}_1.png`
 
-  //   const screenshotPath = testInfo.outputPath(screenshotFilename)
+  const screenshotPath = testInfo.outputPath(screenshotFilename)
 
   //   await page.screenshot({
   //     path: screenshotPath,
@@ -47,6 +47,25 @@ test("looks like expected screenshot", async ({
   // await page.waitForLoadState("domcontentloaded")
 
   // await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  // ALT 1: take snapshot and store it, then compare then always add to test result
+
+  const screenshotActual = await page.screenshot({
+    path: screenshotPath,
+    fullPage: true,
+    scale: "device",
+  })
+
+  await testInfo.attach(screenshotFilename, {
+    body: screenshotActual,
+    contentType: "image/png",
+  })
+
+  await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
+    maxDiffPixelRatio: 0.01,
+  })
+
+  // ALT 2: snapshot-store-compare in one step; adds screenshot to test report only if failure
 
   await expect(page).toHaveScreenshot(screenshotFilename, {
     fullPage: true,
