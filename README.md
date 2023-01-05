@@ -1,8 +1,6 @@
 # tallpad-headlessui-sidebar-vite
 
-[![CI](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/ci.yml/badge.svg)](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/ci.yml)
-
-[![Playwright Tests](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/playwright.yml/badge.svg)](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/playwright.yml)
+[![CI](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/ci.yml/badge.svg)](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/ci.yml) [![Playwright Tests](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows//playwright.e2e.yml/badge.svg)](https://github.com/joma74/tallpad-headlessui-sidebar-vite/actions/workflows/playwright.e2e.yml)
 
 ## Building a dropdown menu
 
