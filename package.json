@@ -3,13 +3,17 @@
   "version": "3.1.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "yarn typecheck && vite build",
     "preview": "vite build && vite preview",
     "start": "yarn dev & wait-on tcp:5173 -v",
-    "test": "vitest",
     "coverage": "vitest run --coverage",
-    "test-ct": "playwright test -c playwright-ct.config.ts",
-    "test-e2e": "playwright test -c playwright.config.ts",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest",
+    "test_ct": "playwright test -c playwright-ct.config.ts",
+    "test_e2e": "playwright test -c playwright.config.ts",
+    "test_e2e-headed": "playwright test -c playwright.config.ts --headed",
+    "test_e2e-updatescreenshots": "yarn test_e2e --update-snapshots && yarn test_e2e --update-snapshots --headed",
+    "show-report": "playwright show-report test-report",
     "test_ci": "vitest",
     "test_ci-ct": "playwright test -c playwright-ct.config.ts",
     "test_ci-e2e": "playwright test"
@@ -53,6 +57,7 @@
     "unplugin-vue-components": "0.21.1",
     "vite": "3.0.2",
     "vitest": "0.18.1",
+    "vue-tsc": "^1.0.22",
     "wait-on": "6.0.1"
   }
 }

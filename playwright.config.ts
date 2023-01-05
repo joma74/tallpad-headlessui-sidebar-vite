@@ -29,6 +29,12 @@ const config: PlaywrightTestConfig = {
       use: {
         browserName: "chromium",
         ...devices["Desktop Chrome"],
+        channel: "chrome",
+        launchOptions: {
+          executablePath: "/usr/bin/google-chrome",
+          args: ["--no-sandbox", "--no-zygote"],
+          slowMo: 500,
+        },
       },
     },
   ],

@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test"
+import { AssertionError } from "assert"
+import { callWithAsyncErrorHandling } from "vue"
 
 test("homepage details", async ({ page }) => {
   await page.goto("/")
@@ -35,9 +37,9 @@ test("looks like expected screenshot", async ({
   const prefix = `${testInfo.title}_v${_v_w}x${_v_h}_m${_m}_t${_t}_dsf${_dsf}_h${_h}`
   console.log(`prefix is set to ${prefix}`)
 
-  const screenshotFilename = `${prefix}_1.png`
+  let screenshotFilename = `${prefix}_1.png`
 
-  const screenshotPath = testInfo.outputPath(screenshotFilename)
+  let screenshotPath = testInfo.outputPath(screenshotFilename)
 
   //   await page.screenshot({
   //     path: screenshotPath,
@@ -46,30 +48,96 @@ test("looks like expected screenshot", async ({
 
   // await page.waitForLoadState("domcontentloaded")
 
-  // await new Promise((resolve) => setTimeout(resolve, 1000))
+  if (!_h) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
 
   // ALT 1: take snapshot and store it, then compare then always add to test result
 
-  const screenshotActual = await page.screenshot({
+  // #1
+
+  let screenshotActual = await page.screenshot({
     path: screenshotPath,
     fullPage: true,
     scale: "device",
   })
+
+  try {
+    await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
+      // maxDiffPixelRatio: 0.01,
+    })
+  } catch (error) {
+    let msg =
+      "\n\n\x1b[33mFirst screenshot did not match, trying second time..."
+    if (error instanceof Error) {
+      msg = error.message + msg
+    }
+    console.log(msg)
+
+    screenshotActual = await page.screenshot({
+      path: screenshotPath,
+      fullPage: true,
+      scale: "device",
+    })
+
+    await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
+      // maxDiffPixelRatio: 0.01,
+    })
+  }
 
   await testInfo.attach(screenshotFilename, {
     body: screenshotActual,
     contentType: "image/png",
   })
 
-  await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
-    maxDiffPixelRatio: 0.01,
+  // #2
+
+  screenshotFilename = `${prefix}_2.png`
+
+  screenshotPath = testInfo.outputPath(screenshotFilename)
+
+  screenshotActual = await page.screenshot({
+    path: screenshotPath,
+    fullPage: true,
+    scale: "device",
+  })
+
+  try {
+    await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
+      // maxDiffPixelRatio: 0.01,
+    })
+  } catch (error) {
+    let msg =
+      "\n\n\x1b[33mFirst screenshot did not match, trying second time..."
+    if (error instanceof Error) {
+      msg = error.message + msg
+    }
+    console.log(msg)
+    screenshotActual = await page.screenshot({
+      path: screenshotPath,
+      fullPage: true,
+      scale: "device",
+    })
+
+    await expect(screenshotActual).toMatchSnapshot(screenshotFilename, {
+      // maxDiffPixelRatio: 0.01,
+    })
+  }
+
+  await testInfo.attach(screenshotFilename, {
+    body: screenshotActual,
+    contentType: "image/png",
   })
 
   // ALT 2: snapshot-store-compare in one step; adds screenshot to test report only if failure
+  // DISABlE b/c does not succeeds a second time
+  //   if (!_h) {
+  //     await new Promise((resolve) => setTimeout(resolve, 1000))
+  //   }
 
-  await expect(page).toHaveScreenshot(screenshotFilename, {
-    fullPage: true,
-    scale: "device",
-    maxDiffPixelRatio: 0.01,
-  })
+  // await expect(page).toHaveScreenshot(screenshotFilename, {
+  //   fullPage: true,
+  //   scale: "device",
+  //   // maxDiffPixelRatio: 0.01,
+  // })
 })
