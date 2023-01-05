@@ -24,7 +24,8 @@
     "tests/**/*.test.ts",
     "src/**/*.d.ts",
     "src/**/*.vue",
-    "./components.d.ts"
+    "./components.d.ts",
+    "playwright-extend.d.ts"
   ],
   "exclude": ["node_modules", "dist", "public"],
   "references": [{ "path": "./tsconfig.node.json" }]
