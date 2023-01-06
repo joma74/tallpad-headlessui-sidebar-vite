@@ -44,6 +44,13 @@ const config: PlaywrightTestConfig = {
         },
       },
     },
+    {
+      name: "Desktop Chromium",
+      use: {
+        browserName: "chromium",
+        ...devices["Desktop Chrome"],
+      },
+    },
   ],
 }
 
