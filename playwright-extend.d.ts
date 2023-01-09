@@ -23,15 +23,17 @@ export type MatchOptions = {
 
 export type TakeOptions = Omit<PageScreenshotOptions, "path">
 
+export type takeMatchAttachScreenshotFunction<R> = (
+  screenshotFilename: string,
+  takeOptions?: TakeOptions,
+  matchOptions?: MatchOptions,
+) => R
+
 declare global {
   namespace PlaywrightTest {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Matchers<R, T> {
-      takeMatchAttachScreenshot(
-        screenshotFilename: string,
-        takeOptions?: TakeOptions,
-        matchOptions?: MatchOptions,
-      ): R
+      takeMatchAttachScreenshot
     }
   }
 }
