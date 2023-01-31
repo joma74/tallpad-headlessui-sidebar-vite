@@ -44,7 +44,7 @@ const config: PlaywrightTestConfig = {
         channel: "chrome",
         launchOptions: {
           executablePath: "/usr/bin/google-chrome",
-          args: ["--no-sandbox", "--no-zygote"],
+          args: ["--no-sandbox", "--no-zygote, --enable-use-zoom-for-dsf=true"],
           slowMo: 500,
         },
       },
